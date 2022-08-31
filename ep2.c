@@ -1,5 +1,15 @@
+/***************************************************************/
+/**                                                           **/
+/**   André Moreno Goveia            NUSP 13682785            **/
+/**   Exercício-Programa 02                                   **/
+/**   Professor: Carlos Eduardo Ferreira                      **/
+/**   Turma: 01                                               **/
+/**                                                           **/
+/***************************************************************/
+
 #include <stdio.h>
 #include <stdlib.h>
+#include "pilha.h"
 
 #define BUFFER_SIZE 4096
 
@@ -14,6 +24,15 @@ typedef struct {
 
 
 
+/* Função responsável por encaixar uma palavra no tabuleiro, retorna 0
+   caso não seja possível o encaixe e 1 caso contrário. A função altera
+   as matrizes fornecidas.  */
+int fit(palavra p, char** c_tab, int** tab, int x, int y);
+
+
+
+/* Função responsável por imprimir a matriz com as palavras encaixadas */
+void printtab(char** c_tab, int x, int y);
 
 
 
@@ -47,7 +66,7 @@ int main(void){
     for(i = 0; i < l; i++){
 
         p = (palavras + i);
-        p->len = 1;
+        p->len = 0;
 
         scanf("%s", buffer);
 
@@ -58,11 +77,20 @@ int main(void){
 
         for(j = 0; *(buffer + j) != '\0'; j++)
             p->word[j] = buffer[j];
-        p->word[p->len - 1] = '\0';
+        p->word[p->len] = '\0';
 
     }
 
 
+    /* Inicia a matriz que armazenará as combinações */
+    char** c_tab = (char**) malloc(x*sizeof(char*));
+        for(i = 0; i < x; i++)
+        *(c_tab + i) = (char*) malloc(y*sizeof(char));
+    
+    for(i = 0; i < x; i++)
+        for(j = 0; j < y; j++)
+            c_tab[i][j] = '*';
+    
 
 
 
@@ -70,7 +98,7 @@ int main(void){
 
 
 
-    /* Liberacao da memória alocada */
+    /* Liberação da memória alocada */
     for(i = 0; i < x; i++)
         free(*(tabuleiro + i));
     free(tabuleiro);
@@ -79,6 +107,105 @@ int main(void){
         free((palavras + i)->word);
     free(palavras);
 
+    for(i = 0; i < x; i++)
+        free(*(c_tab + i));
+    free(c_tab);
+
 
     return 0;
+}
+
+
+
+
+int fit(palavra p, char** c_tab, int** tab, int x, int y){
+
+    int i, j, k;
+
+    int l = 0;
+
+    int h, jh;
+
+    /* Busca horizontal */
+    for(i = 0; i < x && l != p.len; i++){
+
+        l = 0;
+
+        for(j = 0; j < y && l != p.len; j++){
+            
+            if(tab[i][j] != -1)
+                l++;
+            else if(tab[i][j] == -2 && p.word[l-1] == c_tab[i][j])
+                l++;
+            else
+                l = 0;
+
+        }
+
+    }
+    h = l == p.len;
+    jh = j - 1;
+
+    /* Busca vertical */
+    for(j = 0; j < y && l != p.len; j++){
+
+        l = 0;
+
+        for(i = 0; i < x && l != p.len; i++){
+            
+            if(tab[i][j] != -1)
+                l++;
+            else if(tab[i][j] == -2 && p.word[l-1] == c_tab[i][j])
+                l++;
+            else
+                l = 0;
+
+        }
+
+    }
+
+
+    if(l == p.len){
+
+        if(h){
+            i--;
+            for(k = l - 1; k >= 0; k--){
+                c_tab[i][jh] = p.word[k];
+                tab[i][jh] = -2;
+                jh--;
+            }
+        }
+
+        else{
+            i--;
+            j--;
+            for(k = l - 1; k >= 0; k--){
+                c_tab[i][j] = p.word[k];
+                tab[i][j] = -2;
+                i--;
+            }
+        }
+    }
+
+    else 
+        l = 0;
+
+
+
+    return l != 0;
+
+}
+
+ 
+
+void printtab(char** c_tab, int x, int y){
+
+    int i, j;
+    
+    for(i = 0; i < x; i++){
+        printf("\n");
+        for(j = 0; j < y; j++)
+            printf("%c ", c_tab[i][j]);
+    }
+
 }
