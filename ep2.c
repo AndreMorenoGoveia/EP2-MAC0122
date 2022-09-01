@@ -94,6 +94,36 @@ int main(void){
 
 
 
+    int b = 1;
+    int* lista_proibida = (int*) calloc(l, sizeof(int));
+
+
+
+    while(b){
+
+        for(i = 0; i < l; i++){
+            if(!lista_proibida[i]){
+                if(fit(palavras[i], c_tab, tabuleiro, x, y)){
+                    empilha(decisao); // fazer essa função
+                    lista_proibida[i] = 1;
+                }
+                else
+                    lista_proibida[i] = 1;
+            }
+        }
+
+        if(taCerto()) // fazer essa função
+            printtab(c_tab, x ,y);
+
+        else{
+            b = backtrack(); // fazer essa função
+        }
+            
+
+    }
+
+
+
 
 
 
@@ -207,5 +237,12 @@ void printtab(char** c_tab, int x, int y){
         for(j = 0; j < y; j++)
             printf("%c ", c_tab[i][j]);
     }
+
+}
+
+
+int backtrack(){
+
+    
 
 }
