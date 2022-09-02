@@ -34,6 +34,8 @@ pilha* criaPilha(int tamanho, int x, int y){
 
     p->tamMax = tamanho;
 
+    return p;
+
 
 }
 

@@ -134,7 +134,7 @@ int main(void){
         }
 
         
-        b = backtrack(lista_proibida, l, pil, c_tab, tabuleiro, x, y); // fazer essa função
+        b = backtrack(lista_proibida, l, pil, c_tab, tabuleiro, x, y);
         
             
     }
@@ -177,7 +177,7 @@ int main(void){
 
 int fit(palavra p, char** c_tab, int** tab, int x, int y, pilha* pil, int* lista, int le){
 
-    int i, j, k;
+    int i, j = 0, k;
 
     int l = 0;
 
@@ -353,7 +353,7 @@ int backtrack(int* lista, int l, pilha* p, char** c_tab, int** tab, int x, int y
             }
 
             for(i = 0; i < l; i++)
-                lista[i] == it.lista[i];
+                lista[i] = it.lista[i];
 
             return 1;
 

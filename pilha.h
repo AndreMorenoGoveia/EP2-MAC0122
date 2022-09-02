@@ -60,4 +60,4 @@ int pilhaVazia(pilha* p);
 
 
 /* Libera a memória alocada pela pilha */
-void destroiPilha(pilha* p);;
+void destroiPilha(pilha* p);
