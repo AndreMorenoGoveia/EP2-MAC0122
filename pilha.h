@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 /* Estrutura de uma palavra */ 
 typedef struct {
 
