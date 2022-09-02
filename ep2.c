@@ -11,16 +11,7 @@
 #include <stdlib.h>
 #include "pilha.h"
 
-#define BUFFER_SIZE 4096
-
-
-/* Estrutura de uma palavra */ 
-typedef struct {
-
-    char* word;
-    int len;
-
-} palavra;
+//#define BUFFER_SIZE 4096
 
 
 
@@ -32,13 +23,27 @@ int fit(palavra p, char** c_tab, int** tab, int x, int y);
 
 
 /* Função responsável por imprimir a matriz com as palavras encaixadas */
-void printtab(char** c_tab, int x, int y);
+void print_tab(char** c_tab, int x, int y);
+
+
+
+/* Função que confere se todos os espaços em branco estão preenchidos */
+int estaCerto(int** tab, int x, int y);
+
+
+
+/* Função que checa se todas as palavras da lista foram testada */
+int lotou(int* lista, int l);
+
+
 
 
 
 int main(void){
 
-    int i, j;
+
+    int i, j, cont = 0;
+
 
 
     /* Leitura dos tabuleiros */
@@ -53,7 +58,9 @@ int main(void){
         for(j = 0; j < y; j++)
             scanf("%d", *(tabuleiro + i) + j);
    
-    
+
+
+
 
     /* Leitura das palavras */
     int l;
@@ -61,7 +68,7 @@ int main(void){
     palavra* palavras = (palavra*) malloc(l*sizeof(palavra));
 
     palavra* p;
-    char buffer[BUFFER_SIZE];
+    char buffer[4096];
 
     for(i = 0; i < l; i++){
 
@@ -82,6 +89,9 @@ int main(void){
     }
 
 
+
+
+
     /* Inicia a matriz que armazenará as combinações */
     char** c_tab = (char**) malloc(x*sizeof(char*));
         for(i = 0; i < x; i++)
@@ -94,35 +104,41 @@ int main(void){
 
 
 
+
     int b = 1;
     int* lista_proibida = (int*) calloc(l, sizeof(int));
 
+    pilha* p = criaPilha(l);
 
+    
 
     while(b){
 
         for(i = 0; i < l; i++){
             if(!lista_proibida[i]){
-                if(fit(palavras[i], c_tab, tabuleiro, x, y)){
-                    empilha(decisao); // fazer essa função
-                    lista_proibida[i] = 1;
-                }
-                else
-                    lista_proibida[i] = 1;
+                
+                fit(palavras[i], c_tab, tabuleiro, x, y);
+                lista_proibida[i] = 1;
+                 
             }
         }
 
-        if(taCerto()) // fazer essa função
-            printtab(c_tab, x ,y);
-
-        else{
-            b = backtrack(); // fazer essa função
+        if(estaCerto(tabuleiro, x, y)){
+            print_tab(c_tab, x ,y);
+            cont++;
         }
-            
 
+        
+        b = backtrack(lista_proibida); // fazer essa função
+        
+            
     }
 
 
+
+    if(cont == 0)
+        printf("Nao ha solucao");
+    
 
 
 
@@ -141,9 +157,15 @@ int main(void){
         free(*(c_tab + i));
     free(c_tab);
 
+    destroiPilha(p);
+
+
+
+
 
     return 0;
 }
+
 
 
 
@@ -155,6 +177,8 @@ int fit(palavra p, char** c_tab, int** tab, int x, int y){
     int l = 0;
 
     int h, jh;
+
+
 
     /* Busca horizontal */
     for(i = 0; i < x && l != p.len; i++){
@@ -176,6 +200,8 @@ int fit(palavra p, char** c_tab, int** tab, int x, int y){
     h = l == p.len;
     jh = j - 1;
 
+
+
     /* Busca vertical */
     for(j = 0; j < y && l != p.len; j++){
 
@@ -193,6 +219,7 @@ int fit(palavra p, char** c_tab, int** tab, int x, int y){
         }
 
     }
+
 
 
     if(l == p.len){
@@ -228,7 +255,9 @@ int fit(palavra p, char** c_tab, int** tab, int x, int y){
 
  
 
-void printtab(char** c_tab, int x, int y){
+
+
+void print_tab(char** c_tab, int x, int y){
 
     int i, j;
     
@@ -241,8 +270,51 @@ void printtab(char** c_tab, int x, int y){
 }
 
 
-int backtrack(){
 
-    
+
+
+int estaCerto(int** tab, int x, int y){
+
+    int i, j;
+
+    for(i = 0; i < x; i++)
+        for(j = 0; j < y; j++)
+            if(!tab[i][j])
+                return 0;
+
+    return 1;
 
 }
+
+
+
+
+
+int backtrack(int* lista){
+
+
+
+    return 0;
+
+}
+
+
+
+
+
+int lotou(int* lista, int l){
+
+    int i;
+
+    for(i = 0; i < l; i++)
+        if(lista[i] == 0)
+            return 0;
+
+    return 1;
+
+}
+
+
+
+
+

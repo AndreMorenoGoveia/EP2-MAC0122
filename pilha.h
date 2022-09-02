@@ -15,6 +15,8 @@ typedef struct {
     int i;
     int j;
 
+    int* lista;
+
 } item;
 
 
@@ -29,8 +31,14 @@ typedef struct{
 } pilha;
 
 
+
+/* Função que calcula o maior número entre dois inteiros */
+int max(int a, int b);
+
+
+
 /* Aloca memória para uma pilha e seus itens */
-pilha* criaPilha(int tamanho);
+pilha* criaPilha(int tamanho, int x, int y);
 
 
 
@@ -50,4 +58,4 @@ int pilhaVazia(pilha* p);
 
 
 /* Libera a memória alocada pela pilha */
-void destroiPilha(pilha* p)
+void destroiPilha(pilha* p);;
