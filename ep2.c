@@ -43,6 +43,11 @@ int backtrack(int* lista, int l, pilha* p, char** c_tab, int** tab, int x, int y
 
 
 
+void print_int_tab(int** tab, int x, int y);
+
+void print_lista(int *lista, int l);
+
+
 
 int main(void){
 
@@ -122,8 +127,12 @@ int main(void){
         for(i = 0; i < l; i++){
             if(!lista_proibida[i]){
                 
-                fit(palavras[i], c_tab, tabuleiro, x, y, pil, lista_proibida, l);
+
+                print_tab(c_tab, x, y);
+                print_int_tab(tabuleiro, x, y);
+                print_lista(lista_proibida, l);
                 lista_proibida[i] = 1;
+                fit(palavras[i], c_tab, tabuleiro, x, y, pil, lista_proibida, l);
                  
             }
         }
@@ -135,6 +144,10 @@ int main(void){
 
         
         b = backtrack(lista_proibida, l, pil, c_tab, tabuleiro, x, y);
+
+        print_tab(c_tab, x, y);
+        print_int_tab(tabuleiro, x, y);
+        print_lista(lista_proibida, l);
         
             
     }
@@ -142,7 +155,7 @@ int main(void){
 
 
     if(cont == 0)
-        printf("Nao ha solucao");
+        printf("Nao ha solucao\n");
     
 
 
@@ -194,7 +207,7 @@ int fit(palavra p, char** c_tab, int** tab, int x, int y, pilha* pil, int* lista
 
         for(j = 0; j < y && l != p.len; j++){
             
-            if(tab[i][j] != -1)
+            if(tab[i][j] > -1)
                 l++;
             else if(tab[i][j] == -2 && p.word[l-1] == c_tab[i][j])
                 l++;
@@ -216,7 +229,7 @@ int fit(palavra p, char** c_tab, int** tab, int x, int y, pilha* pil, int* lista
 
         for(i = 0; i < x && l != p.len; i++){
             
-            if(tab[i][j] != -1)
+            if(tab[i][j] > -1)
                 l++;
             else if(tab[i][j] == -2 && p.word[l-1] == c_tab[i][j])
                 l++;
@@ -233,7 +246,7 @@ int fit(palavra p, char** c_tab, int** tab, int x, int y, pilha* pil, int* lista
 
         if(h){
 
-            a.alter = (int*) calloc(x, sizeof(int));
+            a.alter = (int*) calloc(y, sizeof(int));
             i--;
             a.i = i;
             a.j = -1;
@@ -243,11 +256,13 @@ int fit(palavra p, char** c_tab, int** tab, int x, int y, pilha* pil, int* lista
                 a.alter[jh] = 2;
                 jh--;
             }
+            for(j = 0; j < y; j++)
+                printf("%d ", a.alter[j]);
         }
 
         else{
 
-            a.alter = (int*) calloc(y, sizeof(int));
+            a.alter = (int*) calloc(x, sizeof(int));
             a.i = -1;
             i--;
             j--;
@@ -258,7 +273,14 @@ int fit(palavra p, char** c_tab, int** tab, int x, int y, pilha* pil, int* lista
                 a.alter[i] = 2;
                 i--;
             }
+
+            for(i = 0; i < x; i++)
+                printf("%d ", a.alter[i]);
+
         }
+
+
+        a.lista = (int*) malloc(le*sizeof(int));
 
         for(i = 0; i < le; i++)
             a.lista[i] = lista[i];
@@ -317,7 +339,7 @@ int backtrack(int* lista, int l, pilha* p, char** c_tab, int** tab, int x, int y
 
     item it;
 
-    int i;
+    int i, j;
 
     if(lotou(lista, l)){
 
@@ -328,13 +350,13 @@ int backtrack(int* lista, int l, pilha* p, char** c_tab, int** tab, int x, int y
         else{
 
             /* Horizontal */
-            if(it.i == -1){
+            if(it.j == -1){
 
-                for(i = 0; i < x; i++){
+                for(j = 0; j < y; j++){
                     
-                    tab[i][it.j] += it.alter[i];
-                    if(it.alter[i] == -2)
-                        c_tab[i][it.j] = '*';
+                    tab[it.i][j] += it.alter[j];
+                    if(tab[it.i][j] == 0)
+                        c_tab[it.i][j] = '*';
 
                 }
 
@@ -342,11 +364,11 @@ int backtrack(int* lista, int l, pilha* p, char** c_tab, int** tab, int x, int y
             /* Vertical */
             else{
 
-                for(i = 0; i < y; i++){
+                for(i = 0; i < x; i++){
                     
-                    tab[it.i][i] += it.alter[i];
-                    if(it.alter[i] == -2)
-                        c_tab[it.i][i] = '*';
+                    tab[i][it.j] += it.alter[i];
+                    if(tab[i][it.j] == 0)
+                        c_tab[i][it.j] = '*';
 
                 }
 
@@ -379,5 +401,29 @@ int lotou(int* lista, int l){
             return 0;
 
     return 1;
+
+}
+
+void print_int_tab(int** tab, int x, int y){
+
+    int i, j;
+    
+    for(i = 0; i < x; i++){
+        printf("\n");
+        for(j = 0; j < y; j++)
+            printf("%d ", tab[i][j]);
+    }
+
+}
+
+
+void print_lista(int *lista, int l){
+
+
+    int i;
+    printf(" \n");
+    for(i = 0; i < l; i++)
+        printf("%d ", lista[i]);
+
 
 }
