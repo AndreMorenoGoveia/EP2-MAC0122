@@ -15,3 +15,7 @@ ep2.o: ep2.c
 
 pilha.o: pilha.c pilha.h
 	$(CC) $(CFlags) -c pilha.c
+
+
+clean:
+	rm *.o
