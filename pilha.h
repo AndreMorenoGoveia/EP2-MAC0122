@@ -5,7 +5,6 @@ typedef struct {
 
     char* word;
     int len;
-    int index;
 
 } palavra;
 
@@ -13,10 +12,11 @@ typedef struct {
 
 /* Estrutura dos itens da pilha */
 typedef struct {
-    
+
     int* char_alter;
     int i;
     int j;
+    int index;
 
     int* restricted;
 
@@ -26,7 +26,7 @@ typedef struct {
 
 /* Estrutura da pilha */
 typedef struct{
-    
+
     item* v;
     int tam;
 

@@ -52,7 +52,7 @@ item desempilha(pilha* p){
 
     p->tam--;
     return p->v[p->tam];
-    
+
 }
 
 
