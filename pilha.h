@@ -12,12 +12,13 @@ typedef struct {
 
 /* Estrutura dos itens da pilha */
 typedef struct {
-    
-    int* alter;
+
+    int* char_alter;
     int i;
     int j;
+    int index;
 
-    int* lista;
+    int* restricted;
 
 } item;
 
@@ -25,10 +26,9 @@ typedef struct {
 
 /* Estrutura da pilha */
 typedef struct{
-    
+
     item* v;
     int tam;
-    int tamMax;
 
 } pilha;
 
@@ -40,7 +40,7 @@ int max(int a, int b);
 
 
 /* Aloca memória para uma pilha e seus itens */
-pilha* criaPilha(int tamanho, int x, int y);
+pilha* criaPilha(int l, int x, int y);
 
 
 
@@ -60,4 +60,4 @@ int pilhaVazia(pilha* p);
 
 
 /* Libera a memória alocada pela pilha */
-void destroiPilha(pilha* p);
+void destroiPilha(pilha* p, int l);

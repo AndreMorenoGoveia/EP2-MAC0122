@@ -13,26 +13,24 @@ int max(int a, int b){
 
 
 
-pilha* criaPilha(int tamanho, int x, int y){
+pilha* criaPilha(int l, int x, int y){
 
     int i = 0;
     int maior = max(x, y);
 
     pilha* p = malloc(sizeof(pilha));
 
-    p->v = malloc(tamanho*sizeof(item));
+    p->v = malloc(l*sizeof(item));
 
-    for(i = 0; i < tamanho; i++){
+    for(i = 0; i < l; i++){
 
-        p->v[i].alter = malloc(maior*sizeof(int));
-        p->v[i].lista = malloc(tamanho*sizeof(int));
+        p->v[i].char_alter = malloc(maior*sizeof(int));
+        p->v[i].restricted = malloc(l*sizeof(int));
 
     }
 
 
     p->tam = 0;
-
-    p->tamMax = tamanho;
 
     return p;
 
@@ -43,12 +41,8 @@ pilha* criaPilha(int tamanho, int x, int y){
 
 void empilha(pilha* p, item i){
 
-    if(p->tam < p->tamMax){
-
-        p->v[p->tam] = i;
-        p->tam++;
-
-    }
+    p->v[p->tam] = i;
+    p->tam++;
 
 }
 
@@ -58,7 +52,7 @@ item desempilha(pilha* p){
 
     p->tam--;
     return p->v[p->tam];
-    
+
 }
 
 
@@ -71,8 +65,13 @@ int pilhaVazia(pilha* p){
 
 
 
-void destroiPilha(pilha* p){
+void destroiPilha(pilha* p, int l){
 
+    int i;
+    for(i = 0; i < l; i++){
+        free(p->v[i].char_alter);
+        free(p->v[i].restricted);
+    }
     free(p->v);
     free(p);
 
