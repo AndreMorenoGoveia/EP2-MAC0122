@@ -12,12 +12,13 @@
 
 #define BUFFER_SIZE 4096
 
+void print_int_tab(int** tab, int x, int y);
 
 
 /* Função responsável por encaixar uma palavra no tabuleiro, retorna 0
    caso não seja possível o encaixe e 1 caso contrário. A função altera
    as matrizes fornecidas.  */
-void encaixa(char** c_tab, int** tab, int x, int y, pilha* pil, palavra p, int* lista, int l, int index);
+int encaixa(char** c_tab, int** tab, int x, int y, pilha* pil, palavra p, int* lista, int l, int index);
 
 
 
@@ -33,6 +34,10 @@ void print_tab(char** c_tab, int x, int y);
 
 /* Função que confere se todos os espaços em branco estão preenchidos */
 int estaCerto(int** tab, int x, int y);
+
+
+/* Funcao que confere se todos as palavras montdas estao na lista */
+int estaCerto_pente_fino(char** c_tab, int x, int y, palavra* words, int l);
 
 
 
@@ -163,9 +168,9 @@ int main(void){
     int i;
     for(i = index; i < l; i++)
         if(!lista[i])
-            return 1;
+            return 0;
 
-    return 0;
+    return 1;
 
  }
 
@@ -181,6 +186,18 @@ void print_tab(char** c_tab, int x, int y){
         printf("\n");
         for(j = 0; j < y; j++)
             printf("%c ", c_tab[i][j]);
+    }
+
+}
+
+void print_int_tab(int** tab, int x, int y){
+
+    int i, j;
+
+    for(i = 0; i < x; i++){
+        printf("\n");
+        for(j = 0; j < y; j++)
+            printf("%d ", tab[i][j]);
     }
 
 }
@@ -203,11 +220,64 @@ int estaCerto(int** tab, int x, int y){
 }
 
 
+int estaCerto_pente_fino(char** c_tab, int x, int y, palavra* words, int l){
+
+    int i, j, k, kl;
+    int b = 1;
+
+    /* Horizontal */
+    for(i = 0; i < x; i++){
+
+        for(j = 0; j < y; j++){
+
+            for(k = 0; k < l; k++){
+
+                for(kl = 0; kl < words[k].len; kl++){
+
+                    if(c_tab[i][j] == '*');
+
+                }
+
+            }
+
+        }
+
+    }
+
+    if(!b)
+        return b;
+
+
+    /* Vertical */
+    for(j = 0; j < y; j++){
+
+        for(i = 0; i < x; i++){
+
+            for(k = 0; k < l; k++){
+
+                for(kl = 0; kl < words[k].len; kl++){
+
+
+
+                }
+
+
+            }
+
+        }
+
+    }
+
+    return b;
+
+}
 
 
 
 
-void encaixa(char** c_tab, int** tab, int x, int y, pilha* pil, palavra p, int* lista, int l, int index){
+
+
+int encaixa(char** c_tab, int** tab, int x, int y, pilha* pil, palavra p, int* lista, int l, int index){
 
 
     int i, j = 0, k;
@@ -302,12 +372,16 @@ void encaixa(char** c_tab, int** tab, int x, int y, pilha* pil, palavra p, int* 
 
         empilha(pil, a);
 
-        free(a.char_alter);
+        /* free(a.char_alter);
 
-        free(a.restricted);
+        free(a.restricted); */
 
     }
 
+
+    else l = 0;
+
+    return l != 0;
 
 }
 
@@ -328,7 +402,7 @@ item desencaixa(int** tab, char** c_tab, int x, int y, int* lista, int l, pilha*
         for(j = 0; j < y; j++){
 
             tab[a.i][j] += a.char_alter[j];
-            if(tab[a.i][j] == 0)
+            if(!(tab[a.i][j]))
                 c_tab[a.i][j] = '*';
 
 
@@ -336,10 +410,11 @@ item desencaixa(int** tab, char** c_tab, int x, int y, int* lista, int l, pilha*
 
 
     }
+    
     /* Vertical */
     else{
 
-        for(i = 0; i < y; i++){
+        for(i = 0; i < x; i++){
 
             tab[i][a.j] += a.char_alter[i];
             if(!(tab[i][a.j]))
@@ -349,6 +424,9 @@ item desencaixa(int** tab, char** c_tab, int x, int y, int* lista, int l, pilha*
         }
 
     }
+
+    for(i = 0; i < l; i++)
+        lista[i] = a.restricted[i];
 
     return a;
 
@@ -365,21 +443,25 @@ int backtrack(pilha* p, palavra* words, int l, char** c_tab, int** tab, int x, i
 
     while(1){
 
-        for(i = pindex; i < l; i++){
-            if(!lista[i]){
-                
-                encaixa(c_tab, tab, x, y, p,
-                        words[i], lista, l , i);
-                i = 0;
+        for(i = pindex; i < l; i++)
+            if(!lista[i])
+                if(encaixa(c_tab, tab, x, y, p, words[i], lista, l , i))
+                    i = 0;
 
-            }
-        }
+            
+        
 
 
 
         if(estaCerto(tab, x, y)){
+
+            if(estaCerto_pente_fino(c_tab, x, y, words, l)){
+
             print_tab(c_tab, x, y);
             cont++;
+
+            }
+
         }
 
 
@@ -398,9 +480,8 @@ int backtrack(pilha* p, palavra* words, int l, char** c_tab, int** tab, int x, i
         a = desencaixa(tab, c_tab, x, y, lista, l, p);
         pindex = a.index + 1;
 
+
         } while(lotado(lista, pindex, l));
-        
-        
         
 
 

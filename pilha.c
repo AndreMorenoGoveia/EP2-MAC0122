@@ -68,7 +68,7 @@ int pilhaVazia(pilha* p){
 void destroiPilha(pilha* p, int l){
 
     int i;
-    for(i = 0; i < l; i++){
+    for(i = 0; i < p->tam; i++){
         free(p->v[i].char_alter);
         free(p->v[i].restricted);
     }
