@@ -17,7 +17,7 @@
 /* Função responsável por encaixar uma palavra no tabuleiro, retorna 0
    caso não seja possível o encaixe e 1 caso contrário. A função altera
    as matrizes fornecidas.  */
-int encaixa(char** c_tab, int** tab, int x, int y, pilha* pil, palavra p, int* lista, int l, int index);
+void encaixa(char** c_tab, int** tab, int x, int y, pilha* pil, palavra p, int* lista, int l, int index);
 
 
 
@@ -207,7 +207,7 @@ int estaCerto(int** tab, int x, int y){
 
 
 
-int encaixa(char** c_tab, int** tab, int x, int y, pilha* pil, palavra p, int* lista, int l, int index){
+void encaixa(char** c_tab, int** tab, int x, int y, pilha* pil, palavra p, int* lista, int l, int index){
 
 
     int i, j = 0, k;
@@ -350,6 +350,7 @@ item desencaixa(int** tab, char** c_tab, int x, int y, int* lista, int l, pilha*
 
     }
 
+    return a;
 
 }
 
@@ -357,10 +358,9 @@ item desencaixa(int** tab, char** c_tab, int x, int y, int* lista, int l, pilha*
 
 int backtrack(pilha* p, palavra* words, int l, char** c_tab, int** tab, int x, int y){
 
-    int i, j, k, cont = 0;
+    int i, cont = 0;
     item a;
     int pindex = 0;
-    int b = 1;
     int* lista = (int*) calloc(l, sizeof(int));
 
     while(1){
