@@ -24,8 +24,7 @@ pilha* criaPilha(int l, int x, int y){
 
     for(i = 0; i < l; i++){
 
-        p->v[i].char_alter = malloc(maior*sizeof(int));
-        p->v[i].restricted = malloc(l*sizeof(int));
+        p->v[i].alter = calloc(maior, sizeof(int));
 
     }
 
@@ -68,10 +67,10 @@ int pilhaVazia(pilha* p){
 void destroiPilha(pilha* p, int l){
 
     int i;
-    for(i = 0; i < p->tam; i++){
-        free(p->v[i].char_alter);
-        free(p->v[i].restricted);
-    }
+
+    for(i = 0; i < p->tam; i++)
+        free(p->v[i].alter);
+
     free(p->v);
     free(p);
 

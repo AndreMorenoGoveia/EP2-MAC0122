@@ -12,18 +12,6 @@
 
 #define BUFFER_SIZE 4096
 
-void print_int_tab(int** tab, int x, int y);
-
-
-/* Função responsável por encaixar uma palavra no tabuleiro, retorna 0
-   caso não seja possível o encaixe e 1 caso contrário. A função altera
-   as matrizes fornecidas.  */
-int encaixa(char** c_tab, int** tab, int x, int y, pilha* pil, palavra p, int* lista, int l, int index);
-
-
-
-/* Função responsável por remover as alterações da tabela ao desempilhar um item da pilha */
-item desencaixa(int** tab, char** c_tab, int x, int y, int* lista, int l, pilha* p);
 
 
 
@@ -32,32 +20,13 @@ void print_tab(char** c_tab, int x, int y);
 
 
 
-/* Função que confere se todos os espaços em branco estão preenchidos */
-int estaCerto(int** tab, int x, int y);
-
-
-/* Funcao que confere se todos as palavras montdas estao na lista */
-int estaCerto_pente_fino(char** c_tab, int x, int y, palavra* words, int l);
-
-
-
-/* Função que testa se há permutações possíveis na atual camada da pilha */
-int lotado(int* lista, int index, int l);
-
-
-
-/* Função que faz o backtrack empilhando e desempilhando itens e assim passando por
-   todas as permutações possíveis  */
-int backtrack(pilha* p, palavra* words, int l, char** c_tab, int** tab, int x, int y);
-
-
 
 
 
 int main(void){
 
 
-    int i, j, cont = 0;
+    int i, j;
 
 
 
@@ -80,14 +49,14 @@ int main(void){
     /* Leitura das palavras */
     int l;
     scanf("%d", &l);
-    palavra* palavras = (palavra*) malloc(l*sizeof(palavra));
+    palavras words = (palavras) malloc(l*sizeof(palavra));
 
     palavra* temp;
     char buffer[BUFFER_SIZE];
 
     for(i = 0; i < l; i++){
 
-        temp = (palavras + i);
+        temp = (words + i);
         temp->len = 0;
 
         scanf("%s", buffer);
@@ -122,19 +91,33 @@ int main(void){
     pilha* p = criaPilha(l, x, y);
 
 
-
-
-    cont = backtrack(p, palavras, l, c_tab, tab, x, y);
-
+    int* repetidos = (int*) calloc(l, sizeof(int));
 
 
 
+    /* Encontra primeiro espaco vago e inicia a busca */
+    int len = 0;
+    for(i = 0; i < x; i++){
+        for(j = 0; j < y; j++){
 
-    if(cont == 0)
-        printf("Nao ha solucao");
+            if(!tab[i][j])
+                len++;
+            else if(len == 1)
+                encontra(tab, c_tab, x, y, 0, repetidos, l, len, words, p, i - len + 1 , j);
+            else if(len > 1)
+                encontra(tab, c_tab, x, y, 1, repetidos, l, len, words, p, i, j - len + 1);
+            else
+                len = 0;
+
+        }
+    }
 
 
+    if(estaCerto(tab, x, y))
+        print_tab(c_tab, x, y);
 
+    else
+        printf("Nao ha solucao\n");
 
 
 
@@ -144,8 +127,8 @@ int main(void){
     free(tab);
 
     for(i = 0; i < l; i++)
-        free((palavras + i)->word);
-    free(palavras);
+        free((words + i)->word);
+    free(words);
 
     for(i = 0; i < x; i++)
         free(*(c_tab + i));
@@ -160,49 +143,94 @@ int main(void){
 
 
 
- int lotado(int* lista, int index, int l){
 
-    if(index >= l)
-        return 1;
+void encontra(int** tab, char** c_tab, int x, int y, int h, int* repetidas,
+                 int l, int len, palavras words, pilha* p, int i0, int j0){
 
-    int i;
-    for(i = index; i < l; i++)
-        if(!lista[i])
-            return 0;
+        int i, j, k;
+        item it = { encontraPalavra(words, len, repetidas, l), i0, j0, len };
+        palavra w = words[it.index];
+
+        if(h){
+
+            if(it.index >= 0){
+
+                for(j = 0; j < len; j++){
+
+                    c_tab[i0][j0 + j] = w.word[j];
+                    tab[i0][j0 + j] -= 2;
+                    it.alter[j0 + j] = 2;
+
+                }
+
+                empilha(p, it);
+
+            }
+
+            else if(pilhaVazia(p)) {}
+
+            else{
+
+                it = desempilha(p);
+                repetidas[it.index] = 0;
+                encontra(tab, c_tab, x, y, 0, repetidas, l, it.len, words, p, it.i, it.j);
+
+            }
+
+
+        }
+
+        else{
+
+            if(it.index >= 0){
+
+                for(i = 0; i < len; i++){
+
+                    c_tab[i0 + i][j0] = w.word[i];
+                    tab[i0 + i][j0] -= 2;
+                    it.alter[i0 + i] = 2;
+
+                }
+
+                empilha(p, it);
+            }
+
+            else if(pilhaVazia(p)) return 0;
+
+            else{
+
+                it = desempilha(p);
+                repetidas[it.index] = 0;
+
+            }
+
+        }
 
     return 1;
 
- }
-
-
-
-
-
-void print_tab(char** c_tab, int x, int y){
-
-    int i, j;
-
-    for(i = 0; i < x; i++){
-        printf("\n");
-        for(j = 0; j < y; j++)
-            printf("%c ", c_tab[i][j]);
-    }
-
-}
-
-void print_int_tab(int** tab, int x, int y){
-
-    int i, j;
-
-    for(i = 0; i < x; i++){
-        printf("\n");
-        for(j = 0; j < y; j++)
-            printf("%d ", tab[i][j]);
-    }
 
 }
 
 
+
+int encontraPalavra(palavra* words, int len, int* repetidas, int l){
+
+    int i;
+
+    for(i = 0; i < l; i++){
+
+        if(!repetidas[i] && len == words[i].len){
+
+            repetidas[i] = 1;
+            return i;
+
+        }
+
+    }
+
+    return -1;
+
+}
 
 
 
@@ -220,271 +248,18 @@ int estaCerto(int** tab, int x, int y){
 }
 
 
-int estaCerto_pente_fino(char** c_tab, int x, int y, palavra* words, int l){
 
-    int i, j, k, kl;
-    int b = 1;
 
-    /* Horizontal */
-    for(i = 0; i < x; i++){
 
-        for(j = 0; j < y; j++){
 
-            for(k = 0; k < l; k++){
-
-                for(kl = 0; kl < words[k].len; kl++){
-
-                    if(c_tab[i][j] == '*');
-
-                }
-
-            }
-
-        }
-
-    }
-
-    if(!b)
-        return b;
-
-
-    /* Vertical */
-    for(j = 0; j < y; j++){
-
-        for(i = 0; i < x; i++){
-
-            for(k = 0; k < l; k++){
-
-                for(kl = 0; kl < words[k].len; kl++){
-
-
-
-                }
-
-
-            }
-
-        }
-
-    }
-
-    return b;
-
-}
-
-
-
-
-
-
-int encaixa(char** c_tab, int** tab, int x, int y, pilha* pil, palavra p, int* lista, int l, int index){
-
-
-    int i, j = 0, k;
-    int le = 0;
-    int h, jh;
-
-    item a;
-
-
-
-    /* Busca horizontal */
-    for(i = 0; i < x && le != p.len; i++){
-
-        le = 0;
-
-        for(j = 0; j < y && le != p.len; j++){
-
-            if(tab[i][j] == 0)
-                le++;
-            else if(tab[i][j] <= -2 && p.word[le] == c_tab[i][j])
-                le++;
-            else
-                le = 0;
-
-        }
-
-    }
-    h = le == p.len;
-    jh = j - 1;
-
-
-
-    /* Busca vertical */
-    for(j = 0; j < y && le != p.len; j++){
-
-        le = 0;
-
-        for(i = 0; i < x && le != p.len; i++){
-
-            if(tab[i][j] == 0)
-                le++;
-            else if(tab[i][j] <= -2 && p.word[le] == c_tab[i][j])
-                le++;
-            else
-                le = 0;
-
-        }
-
-    }
-
-
-
-    if(le == p.len){
-
-        if(h){
-
-            a.char_alter = (int*) calloc(x, sizeof(int));
-            i--;
-            a.i = i;
-            a.j = -1;
-            for(k = le - 1; k >= 0; k--){
-                c_tab[i][jh] = p.word[k];
-                tab[i][jh] += -2;
-                a.char_alter[jh] = 2;
-                jh--;
-            }
-        }
-
-        else{
-
-            a.char_alter = (int*) calloc(y, sizeof(int));
-            i--;
-            j--;
-            a.j = j;
-            for(k = le - 1; k >= 0; k--){
-                c_tab[i][j] = p.word[k];
-                tab[i][j] += -2;
-                a.char_alter[i] = 2;
-                i--;
-            }
-        }
-
-
-
-        lista[index] = 1;
-        a.restricted = (int*) malloc(l*sizeof(int));
-
-        for(i = 0; i < l; i++)
-            a.restricted[i] = lista[i];
-
-        a.index = index;
-
-        empilha(pil, a);
-
-        /* free(a.char_alter);
-
-        free(a.restricted); */
-
-    }
-
-
-    else l = 0;
-
-    return l != 0;
-
-}
-
-
-
-
-item desencaixa(int** tab, char** c_tab, int x, int y, int* lista, int l, pilha* p){
+void print_tab(char** c_tab, int x, int y){
 
     int i, j;
 
-    item a = desempilha(p);
-
-    a.restricted[a.index] = 0;
-
-    /* Horizontal */
-    if(a.j == -1){
-
-        for(j = 0; j < y; j++){
-
-            tab[a.i][j] += a.char_alter[j];
-            if(!(tab[a.i][j]))
-                c_tab[a.i][j] = '*';
-
-
-        }
-
-
-    }
-    
-    /* Vertical */
-    else{
-
-        for(i = 0; i < x; i++){
-
-            tab[i][a.j] += a.char_alter[i];
-            if(!(tab[i][a.j]))
-                c_tab[i][a.j] = '*';
-
-
-        }
-
-    }
-
-    for(i = 0; i < l; i++)
-        lista[i] = a.restricted[i];
-
-    return a;
-
-}
-
-
-
-int backtrack(pilha* p, palavra* words, int l, char** c_tab, int** tab, int x, int y){
-
-    int i, cont = 0;
-    item a;
-    int pindex = 0;
-    int* lista = (int*) calloc(l, sizeof(int));
-
-    while(1){
-
-        for(i = pindex; i < l; i++)
-            if(!lista[i])
-                if(encaixa(c_tab, tab, x, y, p, words[i], lista, l , i))
-                    i = 0;
-
-            
-        
-
-
-
-        if(estaCerto(tab, x, y)){
-
-            if(estaCerto_pente_fino(c_tab, x, y, words, l)){
-
-            print_tab(c_tab, x, y);
-            cont++;
-
-            }
-
-        }
-
-
-
-        do{
-
-
-        if(pilhaVazia(p)){
-            
-            free(lista);
-            return cont;
-
-        }
-
-
-        a = desencaixa(tab, c_tab, x, y, lista, l, p);
-        pindex = a.index + 1;
-
-
-        } while(lotado(lista, pindex, l));
-        
-
-
+    for(i = 0; i < x; i++){
+        printf("\n");
+        for(j = 0; j < y; j++)
+            printf("%c ", c_tab[i][j]);
     }
 
 }

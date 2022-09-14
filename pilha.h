@@ -8,17 +8,18 @@ typedef struct {
 
 } palavra;
 
+typedef palavra* palavras;
+
 
 
 /* Estrutura dos itens da pilha */
-typedef struct {
+typedef struct{
 
-    int* char_alter;
+    int index;
     int i;
     int j;
-    int index;
-
-    int* restricted;
+    int len;
+    int* alter;
 
 } item;
 
