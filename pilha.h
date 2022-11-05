@@ -8,18 +8,39 @@ typedef struct {
 
 } palavra;
 
-typedef palavra* palavras;
+
+
+/* Estrutura da posição de um espaço vazio */
+typedef struct{
+
+    int i;
+    int j;
+    int h;
+
+}pos;
+
+
+
+/* Estrutura de um espaço vazio */
+typedef struct {
+
+    int len;
+    pos p;
+
+} espaco_vazio;
 
 
 
 /* Estrutura dos itens da pilha */
-typedef struct{
+typedef struct {
+
+    int* alter;
+    int* bloq;
+
+    pos p;
+    int len;
 
     int index;
-    int i;
-    int j;
-    int len;
-    int* alter;
 
 } item;
 
@@ -29,23 +50,18 @@ typedef struct{
 typedef struct{
 
     item* v;
-    int tam;
+    int topo;
 
 } pilha;
 
 
 
-/* Função que calcula o maior número entre dois inteiros */
-int max(int a, int b);
+/* Aloca memória para uma pilha e seus itens de acordo com o tamanho fornecido */
+pilha* criaPilha(int tam);
 
 
 
-/* Aloca memória para uma pilha e seus itens */
-pilha* criaPilha(int l, int x, int y);
-
-
-
-/* Adiciona os valores de um item ao topo da pilha */
+/* Adiciona um item ao topo da pilha */
 void empilha(pilha* p, item i);
 
 
@@ -61,4 +77,4 @@ int pilhaVazia(pilha* p);
 
 
 /* Libera a memória alocada pela pilha */
-void destroiPilha(pilha* p, int l);
+void destroiPilha(pilha* p);
