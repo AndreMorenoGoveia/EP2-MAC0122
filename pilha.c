@@ -2,34 +2,13 @@
 
 
 
-int max(int a, int b){
-
-    if(a > b)
-        return a;
-
-    return b;
-
-}
-
-
-
-pilha* criaPilha(int l, int x, int y){
-
-    int i = 0;
-    int maior = max(x, y);
+pilha* criaPilha(int tam){
 
     pilha* p = malloc(sizeof(pilha));
 
-    p->v = malloc(l*sizeof(item));
+    p->v = malloc(tam*sizeof(item));
 
-    for(i = 0; i < l; i++){
-
-        p->v[i].alter = calloc(maior, sizeof(int));
-
-    }
-
-
-    p->tam = 0;
+    p->topo = -1;
 
     return p;
 
@@ -40,8 +19,8 @@ pilha* criaPilha(int l, int x, int y){
 
 void empilha(pilha* p, item i){
 
-    p->v[p->tam] = i;
-    p->tam++;
+    p->v[p->topo + 1] = i;
+    p->topo++;
 
 }
 
@@ -49,8 +28,8 @@ void empilha(pilha* p, item i){
 
 item desempilha(pilha* p){
 
-    p->tam--;
-    return p->v[p->tam];
+    p->topo--;
+    return p->v[p->topo + 1];
 
 }
 
@@ -58,18 +37,21 @@ item desempilha(pilha* p){
 
 int pilhaVazia(pilha* p){
 
-    return p->tam == 0;
+    return p->topo == -1;
 
 }
 
 
 
-void destroiPilha(pilha* p, int l){
+void destroiPilha(pilha* p){
 
-    int i;
+    (p->topo)++;
+    while (p->topo--){
 
-    for(i = 0; i < p->tam; i++)
-        free(p->v[i].alter);
+        free(p->v[p->topo].alter);
+        free(p->v[p->topo].bloq);
+
+    }
 
     free(p->v);
     free(p);
