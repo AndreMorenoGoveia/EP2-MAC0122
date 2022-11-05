@@ -51,8 +51,13 @@ soda
 O programa deve retornar
 
 Instancia 1
+
 * l u a
+
 c a r n
+
 a d * t
+
 s o d a
+
 a * o s
