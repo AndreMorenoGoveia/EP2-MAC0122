@@ -31,7 +31,7 @@ lado\
 lua\
 os\
 soda\
-0 0\
+0 0
 
 O programa deve retornar
 
@@ -40,4 +40,4 @@ Instancia 1\
 c a r n\
 a d * t\
 s o d a\
-a * o s\
+a * o s
