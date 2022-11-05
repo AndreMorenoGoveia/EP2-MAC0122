@@ -15,21 +15,37 @@ das palavras em relação aos espaços vazios até encontrar uma solução.
 Para a entrada:
 
 5 4
+
 -1 0 0 0
+
 0 0 0 0
+
 0 0 -1 0
+
 0 0 0 0
+
 0 -1 0 0
+
 10
+
 ad
+
 antas
+
 carn
+
 casa
+
 do
+
 lado
+
 lua
+
 os
+
 soda
+
 0 0
 
 O programa deve retornar
