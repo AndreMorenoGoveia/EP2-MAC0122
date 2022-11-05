@@ -52,7 +52,7 @@ O programa deve retornar
 
 Instancia 1
 
-* l u a
+\* l u a
 
 c a r n
 
